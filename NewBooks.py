@@ -1,10 +1,10 @@
 # imports
-import json,time,sys
+import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 from SearchFunc import typesearch
 from datetime import datetime, timedelta
 from database import editdatabase
-from main import jsonrefill
+from globalfunctions import jsonrefill
 
 def newbooking():
     # collect room type as input

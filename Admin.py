@@ -1,7 +1,7 @@
 # imports
 import json,time,sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from main import jsonrefill
+from globalfunctions import jsonrefill
 from database import  recordsmenu
 truepass = "ADMIN123"
 

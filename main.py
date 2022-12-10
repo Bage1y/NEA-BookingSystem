@@ -4,15 +4,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from NewBooks import newbooking
 from datetime import datetime, timedelta
 from Admin import adminmenu
+from CancelBooks import cancelbooking
+from globalfunctions import jsonrefill
 truepass = "ADMIN123"
-
-# re-json-dump
-def jsonrefill(parameter):
-    file = open("rooms.json", 'w')
-    file.close()
-    file = open("rooms.json", "w")
-    file.write(json.dumps(parameter))
-    file.close()
 
 # room resetting
 def roomreset():
@@ -174,7 +168,6 @@ while True:
 
     if __name__ == "__main__":
         import sys
-
         app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
         ui = Ui_MainWindow()
