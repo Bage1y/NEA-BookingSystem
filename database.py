@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-import os, time
+import time
 
 def editdatabase(roomnumber,bookingname,startdate,enddate):
 	file = open("record.json","r")
