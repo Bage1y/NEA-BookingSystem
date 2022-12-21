@@ -1,5 +1,5 @@
 # imports
-import json,time
+import json,time,os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from NewBooks import newbooking
 from datetime import datetime, timedelta
@@ -46,12 +46,12 @@ def adminaccess():
 
 while True:
     #GUI
-    class Ui_MainWindow(object):
-        def setupUi(self, MainWindow):
-            MainWindow.setObjectName("MainWindow")
-            MainWindow.resize(936, 818)
-            MainWindow.setStyleSheet("background-color: rgb(26, 26, 26);\n""")
-            self.centralwidget = QtWidgets.QWidget(MainWindow)
+    class Ui_MainMenuWindow(object):
+        def setupUi(self, MainMenuWindow):
+            MainMenuWindow.setObjectName("MainMenuWindow")
+            MainMenuWindow.resize(936, 818)
+            MainMenuWindow.setStyleSheet("background-color: rgb(26, 26, 26);\n""")
+            self.centralwidget = QtWidgets.QWidget(MainMenuWindow)
             self.centralwidget.setObjectName("centralwidget")
             self.Frame1 = QtWidgets.QFrame(self.centralwidget)
             self.Frame1.setGeometry(QtCore.QRect(0, -10, 71, 841))
@@ -121,6 +121,8 @@ while True:
             self.textBrowser.setFont(font)
             self.textBrowser.setStyleSheet("color: rgb(237, 237, 237);\n""background-color: qlineargradient(spread:pad, x1:0.12, y1:0.489, x2:1, y2:0.517, stop:0.210227 rgba(0, 104, 113, 194), stop:1 rgba(23, 25, 23, 158));")
             self.textBrowser.setObjectName("textBrowser")
+
+            # new booking button
             self.NewBookingButton = QtWidgets.QPushButton(self.frame)
             self.NewBookingButton.setGeometry(QtCore.QRect(320, 280, 231, 131))
             font = QtGui.QFont()
@@ -131,46 +133,48 @@ while True:
             font.setUnderline(False)
             font.setWeight(50)
             font.setKerning(True)
-
-            #new booking button
             self.NewBookingButton.setFont(font)
             self.NewBookingButton.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;\n""")
             self.NewBookingButton.setObjectName("NewBookingButton")
             self.NewBookingButton.clicked.connect(self.newbook)
 
             #additional main menu
-            MainWindow.setCentralWidget(self.centralwidget)
-            self.statusbar = QtWidgets.QStatusBar(MainWindow)
+            MainMenuWindow.setCentralWidget(self.centralwidget)
+            self.statusbar = QtWidgets.QStatusBar(MainMenuWindow)
             self.statusbar.setObjectName("statusbar")
-            MainWindow.setStatusBar(self.statusbar)
+            MainMenuWindow.setStatusBar(self.statusbar)
 
-            self.retranslateUi(MainWindow)
-            QtCore.QMetaObject.connectSlotsByName(MainWindow)
+            self.retranslateUi(MainMenuWindow)
+            QtCore.QMetaObject.connectSlotsByName(MainMenuWindow)
 
         def admin(self):
+            MainMenuWindow.hide()
             adminaccess()
+            MainMenuWindow.show()
         def newbook(self):
+            MainMenuWindow.hide()
             newbooking()
+            MainMenuWindow.show()
         def cancelbook(self):
             cancelbooking()
         #def renewbook(self):
         #    renewbooking()
 
-        def retranslateUi(self, MainWindow):
+        def retranslateUi(self, MainMenuWindow):
             _translate = QtCore.QCoreApplication.translate
-            MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-            self.AdminButton.setText(_translate("MainWindow", "Admin"))
-            self.CancelBookingButton.setText(_translate("MainWindow", "Cancel booking"))
-            self.RenewBookingButton.setText(_translate("MainWindow", "Renew booking"))
-            self.textBrowser.setHtml(_translate("MainWindow","<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'Yu Gothic\'; font-size:48pt; font-weight:400; font-style:normal;\">\n""<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Segoe UI Light\';\">Welcome</span></p></body></html>"))
-            self.NewBookingButton.setText(_translate("MainWindow", "Make a new booking"))
+            MainMenuWindow.setWindowTitle(_translate("MainMenuWindow", "MainMenuWindow"))
+            self.AdminButton.setText(_translate("MainMenuWindow", "Admin"))
+            self.CancelBookingButton.setText(_translate("MainMenuWindow", "Cancel booking"))
+            self.RenewBookingButton.setText(_translate("MainMenuWindow", "Renew booking"))
+            self.textBrowser.setHtml(_translate("MainMenuWindow","<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'Yu Gothic\'; font-size:48pt; font-weight:400; font-style:normal;\">\n""<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Segoe UI Light\';\">Welcome</span></p></body></html>"))
+            self.NewBookingButton.setText(_translate("MainMenuWindow", "Make a new booking"))
 
 
     if __name__ == "__main__":
         import sys
         app = QtWidgets.QApplication(sys.argv)
-        MainWindow = QtWidgets.QMainWindow()
-        ui = Ui_MainWindow()
-        ui.setupUi(MainWindow)
-        MainWindow.show()
+        MainMenuWindow = QtWidgets.QMainWindow()
+        ui = Ui_MainMenuWindow()
+        ui.setupUi(MainMenuWindow)
+        MainMenuWindow.show()
         sys.exit(app.exec_())
