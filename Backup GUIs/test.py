@@ -6,10 +6,44 @@ from datetime import datetime, timedelta
 from database import editdatabase
 from globalfunctions import jsonrefill,linearsearch
 
+def backgroundbooking(room,bookingname,booklength):
+    dateObj = datetime.today()
+    enddate = dateObj + timedelta(days=booklength)
+    enddate = enddate.strftime("%d-%m-%Y")
+    enddate = enddate.split(' ')[0]
+    startdate = dateObj.strftime("%d-%m-%Y")
+    # validation
+    if booklength > 0:
+        roomtypes = {1: 'Single', 2: 'Twin', 3: 'Couple', 4: 'Family'}
+        file = open("../rooms.json", 'r')
+        data = file.read()
+        file.close()
+        fulldata = json.loads(data)
+        room = roomtypes[room]
+        editlist = fulldata
+        editlist = linearsearch(editlist, room, 'Type')
+        if not editlist:
+            return False
+        else:
+            selectedroom = editlist[0]
+            file = open("../rooms.json", 'r')
+            data = file.read()
+            file.close()
+            fulldata = json.loads(data)
+            fulldata[selectedroom['Roomnum'] - 1]['Status'] = "Unavailable"
+            fulldata[selectedroom['Roomnum'] - 1]['Date'] = enddate
+            jsonrefill(fulldata)
+            roomnumber = fulldata[selectedroom['Roomnum'] - 1]['Roomnum']
+            editdatabase(roomnumber, bookingname, startdate, enddate)
+            print("Room succesfully booked")
+            return True
+    else:
+        print("Invalid input")
+
 # all preferences search function
 def typesearch(room):
     roomtypes = {1: 'Single', 2: 'Twin', 3: 'Couple', 4: 'Family'}
-    file = open("rooms.json", 'r')
+    file = open("../rooms.json", 'r')
     data = file.read()
     file.close()
     fulldata = json.loads(data)
@@ -21,6 +55,8 @@ def typesearch(room):
     else:
         return editlist[0]
 
+#def newbooking():
+    #while True:
 class Ui_NewBookingWindow(QDialog):
     def __init__(self):
         super().__init__()
@@ -40,7 +76,6 @@ class Ui_NewBookingWindow(QDialog):
         self.BackButton.setGeometry(QtCore.QRect(10, 10, 41, 41))
         self.BackButton.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.864, y1:0.892045, x2:0.124591, y2:0.165, stop:0 rgba(0, 104, 113, 255), stop:1 rgba(7, 7, 9, 210));\n""color: rgb(215, 219, 218);\n""border-width: 10px;\n""border-color: rgb(135, 135, 135);\n""border-radius: 10px;\n""")
         self.BackButton.setObjectName("BackButton")
-        self.BackButton.clicked.connect(self.backfunc)
         #detail
         self.Frame1_2 = QtWidgets.QFrame(self.centralwidget)
         self.Frame1_2.setGeometry(QtCore.QRect(70, 0, 871, 71))
@@ -157,57 +192,36 @@ class Ui_NewBookingWindow(QDialog):
         self.AvailabilityLabel.setObjectName("AvailabilityLabel")
         self.AvailabilityLabel.hide()
         #widget levels
-        self.textBrowser.raise_()
-        self.nightslabel.raise_()
-        self.Namelabel.raise_()
-        self.Roomtypelabel.raise_()
-        self.roomtypebox.raise_()
-        self.NameBox.raise_()
-        self.nightsbox.raise_()
-        self.label.raise_()
-        self.continuebutton.raise_()
-        self.calendaframe.raise_()
-        self.Calendar.raise_()
-        self.AvailabilityLabel.raise_()
-        self.retranslateUi(self)
+        #self.textBrowser.raise_()
+        #self.nightslabel.raise_()
+        #self.Namelabel.raise_()
+        #self.Roomtypelabel.raise_()
+        #self.roomtypebox.raise_()
+        #self.NameBox.raise_()
+        #self.nightsbox.raise_()
+        #self.label.raise_()
+        #self.continuebutton.raise_()
+        #self.calendaframe.raise_()
+        #self.Calendar.raise_()
+        #self.AvailabilityLabel.raise_()
+        #self.setCentralWidget(self.centralwidget)
+        #self.statusbar = QtWidgets.QStatusBar(self)
+        #self.statusbar.setObjectName("statusbar")
+        #self.setStatusBar(self.statusbar)
+        #self.retranslateUi(self)
         #QtCore.QMetaObject.connectSlotsByName(self)
     #usage functions
     def usedata(self):
         room = self.roomtypebox.currentText()
         bookingname = self.NameBox.toPlainText()
         booklength = self.nightsbox.value()
-        dateObj = datetime.today()
-        enddate = dateObj + timedelta(days=booklength)
-        enddate = enddate.strftime("%d-%m-%Y")
-        enddate = enddate.split(' ')[0]
-        startdate = dateObj.strftime("%d-%m-%Y")
-        # validation
-        if booklength > 0:
-            file = open("rooms.json", 'r')
-            data = file.read()
-            file.close()
-            fulldata = json.loads(data)
-            editlist = fulldata
-            editlist = linearsearch(editlist, room, 'Type')
-            if not editlist:
-                self.AvailabilityLabel.show()
-                time.sleep(1.5)
-                self.AvailabilityLabel.hide()
-            else:
-                selectedroom = editlist[0]
-                file = open("rooms.json", 'r')
-                data = file.read()
-                file.close()
-                fulldata = json.loads(data)
-                fulldata[selectedroom['Roomnum'] - 1]['Status'] = "Unavailable"
-                fulldata[selectedroom['Roomnum'] - 1]['Date'] = enddate
-                jsonrefill(fulldata)
-                roomnumber = fulldata[selectedroom['Roomnum'] - 1]['Roomnum']
-                editdatabase(roomnumber, bookingname, startdate, enddate)
-                print("Room succesfully booked")
-                self.close()
-    def backfunc(self):
-        self.close()
+        availability = backgroundbooking(room,bookingname,booklength)
+        if availability == False:
+            self.AvailabilityLabel.show()
+            time.sleep(3)
+        else:
+            print("Booking finalised")
+            Ui_NewBookingWindow.quit()
     def retranslateUi(self, NewBookingWindow):
         _translate = QtCore.QCoreApplication.translate
         NewBookingWindow.setWindowTitle(_translate("NewBookingWindow", "NewBookingWindow"))
@@ -223,3 +237,23 @@ class Ui_NewBookingWindow(QDialog):
         self.label.setText(_translate("NewBookingWindow","<html><head/><body><p align=\"justify\"><span style=\" font-size:14pt;\">Please enter your preferences</span></p></body></html>"))
         self.continuebutton.setText(_translate("NewBookingWindow", "Continue to payment"))
         self.AvailabilityLabel.setText(_translate("NewBookingWindow", "No rooms available for selected room type"))
+
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+        button = QPushButton("Press me for a dialog!")
+        button.clicked.connect(self.button_clicked)
+        self.setCentralWidget(button)
+
+    def button_clicked(self, s):
+        dlg = Ui_NewBookingWindow()
+        dlg.setWindowTitle("BookWindow")
+        dlg.exec()
+
+import sys
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec()
