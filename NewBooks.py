@@ -62,12 +62,12 @@ class Ui_NewBookingWindow(QDialog):
         self.textBrowser.setFont(font)
         self.textBrowser.setStyleSheet("color: rgb(237, 237, 237);\n""background-color: qlineargradient(spread:pad, x1:0.12, y1:0.489, x2:1, y2:0.517, stop:0.210227 rgba(0, 104, 113, 194), stop:1 rgba(23, 25, 23, 158));")
         self.textBrowser.setObjectName("textBrowser")
+        #number-of-nights label
         self.nightslabel = QtWidgets.QLabel(self.frame)
         self.nightslabel.setGeometry(QtCore.QRect(10, 450, 311, 61))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Light")
         font.setPointSize(14)
-        #number-of-nights label
         self.nightslabel.setFont(font)
         self.nightslabel.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.nightslabel.setObjectName("nightslabel")
@@ -145,13 +145,12 @@ class Ui_NewBookingWindow(QDialog):
         self.calendaframe.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.calendaframe.setText("")
         self.calendaframe.setObjectName("calendaframe")
-        #room type label
+        #no availability notice
         self.AvailabilityLabel = QtWidgets.QLabel(self.frame)
         self.AvailabilityLabel.setGeometry(QtCore.QRect(280, 550, 281, 61))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Light")
         font.setPointSize(12)
-        #no availability notice
         self.AvailabilityLabel.setFont(font)
         self.AvailabilityLabel.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.501, y1:0.897727, x2:0.528, y2:0, stop:0 rgba(140, 171, 174, 255), stop:1 rgba(225, 225, 219, 255));\n""color: rgb(176, 0, 0);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.AvailabilityLabel.setObjectName("AvailabilityLabel")

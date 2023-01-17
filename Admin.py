@@ -3,7 +3,7 @@ import json,time,sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from globalfunctions import jsonrefill
-from database import recordsmenu
+from database import Ui_RecordsWindow
 truepass = "ADMIN123"
 
 class Ui_AdminWindow(QDialog):
@@ -75,7 +75,7 @@ class Ui_AdminWindow(QDialog):
         self.recordsButton.setFont(font)
         self.recordsButton.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.recordsButton.setObjectName("recordsButton")
-        #self.recordsButton.clicked.connect(self.recordsaccess)
+        self.recordsButton.clicked.connect(self.records)
         #close program button
         self.closeButton = QtWidgets.QPushButton(self.frame)
         self.closeButton.setGeometry(QtCore.QRect(280, 420, 311, 81))
@@ -107,8 +107,8 @@ class Ui_AdminWindow(QDialog):
         self.closelabel.setObjectName("closelabel")
         self.closelabel.hide()
         #widget levels
-        #self.closelabel.raise_()
-        #self.resetlabel.raise_()
+        self.closelabel.raise_()
+        self.resetlabel.raise_()
         self.retranslateUi(self)
         #QtCore.QMetaObject.connectSlotsByName(self)
     #usage functions
@@ -125,10 +125,9 @@ class Ui_AdminWindow(QDialog):
                 editlist[selectedroom['Roomnum'] - 1]['Status'] = "Available"
                 editlist[selectedroom['Roomnum'] - 1]['Date'] = " "
                 jsonrefill(editlist)
+        print("All rooms reset")
         self.resetlabel.show()
         time.sleep(1.5)
-        print("All rooms reset")
-        time.sleep(1)
         self.resetlabel.hide()
     def shutdown(self):
         self.closelabel.show()
@@ -139,6 +138,12 @@ class Ui_AdminWindow(QDialog):
             print(countdown)
             time.sleep(0.5)
         sys.exit()
+    def records(self):
+        Ui_AdminWindow.hide(self)
+        dlg = Ui_RecordsWindow()
+        dlg.setWindowTitle("RecordsWindow")
+        dlg.exec()
+        Ui_AdminWindow.show(self)
     def retranslateUi(self, AdminWindow):
         _translate = QtCore.QCoreApplication.translate
         AdminWindow.setWindowTitle(_translate("AdminWindow", "AdminWindow"))

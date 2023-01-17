@@ -2,11 +2,12 @@
 import json,time,os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from NewBooks import Ui_NewBookingWindow
+from PyQt5.QtWidgets import QLineEdit
 from datetime import datetime, timedelta
 from Admin import Ui_AdminWindow
-from CancelBooks import cancelbooking
+from CancelBooks import Ui_CancelBookingWindow
 from globalfunctions import jsonrefill
-truepass = "ADMIN123"
+truepass = "admin"
 
 # room resetting
 def roomreset():
@@ -68,10 +69,11 @@ while True:
             self.frame.setObjectName("frame")
 
             #password entry
-            self.passbox = QtWidgets.QTextEdit(self.Frame1_2)
+            self.passbox = QtWidgets.QLineEdit(self.Frame1_2)
             self.passbox.setGeometry(QtCore.QRect(5, 15, 241, 30))
             self.passbox.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.12, y1:0.489, x2:1, y2:0.517, stop:0.210227 rgba(0, 104, 113, 194), stop:1 rgba(36, 37, 37, 252, 158));\n""selection-color: rgb(4, 138, 140);\n""selection-background-color: rgb(181, 181, 181);\n""alternate-background-color: qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
             self.passbox.setObjectName("passbox")
+            self.passbox.setEchoMode(QtWidgets.QLineEdit.Password)
 
             #cancel booking button
             self.CancelBookingButton = QtWidgets.QPushButton(self.frame)
@@ -140,7 +142,7 @@ while True:
             QtCore.QMetaObject.connectSlotsByName(MainMenuWindow)
 
         def admin(self):
-            entered = self.passbox.toPlainText()
+            entered = self.passbox.text()
             self.passbox.clear()
             if entered == truepass:
                 MainMenuWindow.hide()
@@ -158,7 +160,11 @@ while True:
             dlg.exec()
             MainMenuWindow.show()
         def cancelbook(self):
-            cancelbooking()
+            MainMenuWindow.hide()
+            dlg = Ui_CancelBookingWindow()
+            dlg.setWindowTitle("CancelBooksWindow")
+            dlg.exec()
+            MainMenuWindow.show()
         #def renewbook(self):
         #    renewbooking()
 
