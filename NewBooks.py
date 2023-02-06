@@ -135,7 +135,7 @@ class Ui_NewBookingWindow(QDialog):
         self.continuebutton.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.continuebutton.setObjectName("continuebutton")
         self.continuebutton.clicked.connect(self.usedata)
-        #details (calendar's frame included)
+        #calendar frame
         self.calendaframe = QtWidgets.QLabel(self.frame)
         self.calendaframe.setGeometry(QtCore.QRect(510, 130, 351, 321))
         font = QtGui.QFont()
@@ -201,8 +201,9 @@ class Ui_NewBookingWindow(QDialog):
                 fulldata[selectedroom['Roomnum'] - 1]['Status'] = "Unavailable"
                 fulldata[selectedroom['Roomnum'] - 1]['Date'] = enddate
                 jsonrefill(fulldata)
+                bookstatus = 'Ongoing'
                 roomnumber = fulldata[selectedroom['Roomnum'] - 1]['Roomnum']
-                editdatabase(roomnumber, bookingname, startdate, enddate)
+                editdatabase(roomnumber, bookingname, startdate, enddate, bookstatus)
                 print("Room succesfully booked")
                 self.close()
     def backfunc(self):

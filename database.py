@@ -1,16 +1,17 @@
 import pandas as pd
-import json,time
+import json
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog,QItemDelegate, QTableWidgetItem,QTableWidget,QTableView
+from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import QAbstractTableModel,Qt
+from globalfunctions import PandasModel
 
-def editdatabase(roomnumber,bookingname,startdate,enddate):
+def editdatabase(roomnumber,bookingname,startdate,enddate,bookstatus):
 	file = open("record.json","r")
 	data = file.read()
 	editlist = json.loads(data)
 	file.close()
 	bookingnum = len(editlist)+1
-	toAppend = {"BookingNumber":bookingnum, "Roomnum":roomnumber, "BookingName":bookingname, "StartDate":startdate, "EndDate":enddate}
+	toAppend = {"BookingNumber":bookingnum, "Roomnum":roomnumber, "BookingName":bookingname, "StartDate":startdate, "EndDate":enddate,"BookStatus":bookstatus}
 	file = open("record.json",'r')
 	data = file.read()
 	file.close()
@@ -59,24 +60,6 @@ def editdatabase(roomnumber,bookingname,startdate,enddate):
 #				print(loadrecords,"\n")
 #		else:
 #			return None
-
-#TABLE
-class PandasModel(QtCore.QAbstractTableModel):
-	def __init__(self,data):
-		QAbstractTableModel.__init__(self)
-		self._data = data
-	def rowCount(self,parent=None):
-		return self._data.shape[0]
-	def columnCount(self,parent=None):
-		return self._data.shape[1]
-	def data(self,index,role=Qt.DisplayRole):
-		if index.isValid():
-			if role == Qt.DisplayRole:
-				return str(self._data.iloc[index.row(),index.column()])
-	def headerData(self,col,orientation,role):
-		if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-			return self._data.columns[col]
-		return None
 
 class Ui_RecordsWindow(QDialog):
 	file = open("record.json", "r")
@@ -233,7 +216,7 @@ class Ui_RecordsWindow(QDialog):
 		self.tablelable.setStyleSheet("background-color: rgb(48, 48, 48, 150);\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
 		self.tablelable.setText("")
 		self.tablelable.setObjectName("tablelable")
-		#dataframe table display - PROBLEM AREA!!
+		#dataframe table display
 		self.datatable = QtWidgets.QTableView(self.tablelable)
 		self.datatable.setGeometry(QtCore.QRect(10, 12, 520, 570))
 		self.datatable.setSortingEnabled(True)
@@ -266,7 +249,6 @@ class Ui_RecordsWindow(QDialog):
 		editlist = json.loads(data)
 		file.close()
 		df = pd.DataFrame(editlist)
-		#df = pd.read_json('record.json')
 		print(df)
 		model = PandasModel(df)
 		self.datatable.setModel(model)

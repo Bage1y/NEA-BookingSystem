@@ -1,12 +1,12 @@
 # imports
-import json,time,os
+import json,random
 from PyQt5 import QtCore, QtGui, QtWidgets
 from NewBooks import Ui_NewBookingWindow
-from PyQt5.QtWidgets import QLineEdit
-from datetime import datetime, timedelta
+from datetime import datetime
 from Admin import Ui_AdminWindow
 from CancelBooks import Ui_CancelBookingWindow
-from globalfunctions import jsonrefill
+from RenewBooks import Ui_RenewBookingWindow
+from globalfunctions import jsonrefill,recordjsonrefill
 truepass = "admin"
 
 # room resetting
@@ -15,7 +15,7 @@ def roomreset():
     data = file.read()
     file.close()
     editlist = json.loads(data)
-    for i in range(len(editlist) - 1):
+    for i in range(len(editlist)):
         selectedroom = editlist[i]
         if editlist[i]['Status'] == 'Unavailable':
             today = datetime.now()
@@ -23,13 +23,26 @@ def roomreset():
             now = now.strftime("%H")
             now = int(now)
             # now+=1 #to change BST to GMT
-            if editlist[i]['Date'] <= today.strftime("%d-%m-%Y") and now > 10:
-                editlist[selectedroom['Roomnum'] - 1]['Status'] = "Available"
-                editlist[selectedroom['Roomnum'] - 1]['Date'] = " "
-                jsonrefill(editlist)
-# print("Required rooms reset")
-# time.sleep(1)
-# resets rooms date and status
+            # record.json
+            file = open("record.json", 'r')
+            data = file.read()
+            file.close()
+            recordlist = json.loads(data)
+            finallist = []
+            for x in range(len(recordlist)):
+                if recordlist[x]['Roomnum'] == selectedroom['Roomnum'] and recordlist[x]['EndDate'] == selectedroom['Date']:
+                    finallist.append(recordlist[x])
+            if not finallist:
+                print("No rooms to reset")
+            else:
+                recordfinal = finallist[len(finallist)-1]
+                if editlist[i]['Date'] <= today.strftime("%d-%m-%Y") and now >= 10:
+                    editlist[selectedroom['Roomnum']-1]['Status'] = "Available"
+                    editlist[selectedroom['Roomnum']-1]['Date'] = " "
+                    recordlist[recordfinal['Roomnum']-1]['BookStatus'] = "Complete"
+                    jsonrefill(editlist)
+                    recordjsonrefill(recordlist)
+                print("Required rooms reset")
 
 while True:
     #GUI
@@ -105,6 +118,7 @@ while True:
             self.RenewBookingButton.setFont(font)
             self.RenewBookingButton.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;\n""")
             self.RenewBookingButton.setObjectName("RenewBookingButton")
+            self.RenewBookingButton.clicked.connect(self.renewbook)
 
             #extra details
             self.textBrowser = QtWidgets.QTextBrowser(self.frame)
@@ -165,8 +179,12 @@ while True:
             dlg.setWindowTitle("CancelBooksWindow")
             dlg.exec()
             MainMenuWindow.show()
-        #def renewbook(self):
-        #    renewbooking()
+        def renewbook(self):
+            MainMenuWindow.hide()
+            dlg = Ui_RenewBookingWindow()
+            dlg.setWindowTitle("RenewBookingWindow")
+            dlg.exec()
+            MainMenuWindow.show()
 
         def retranslateUi(self, MainMenuWindow):
             _translate = QtCore.QCoreApplication.translate
@@ -179,6 +197,7 @@ while True:
 
 
     if __name__ == "__main__":
+        roomreset()
         import sys
         app = QtWidgets.QApplication(sys.argv)
         MainMenuWindow = QtWidgets.QMainWindow()

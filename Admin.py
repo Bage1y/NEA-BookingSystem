@@ -1,9 +1,10 @@
 # imports
-import json,time,sys
+import json,time,sys,random
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
-from globalfunctions import jsonrefill
+from globalfunctions import jsonrefill,recordjsonrefill
 from database import Ui_RecordsWindow
+from datetime import datetime
 truepass = "ADMIN123"
 
 class Ui_AdminWindow(QDialog):
@@ -125,6 +126,17 @@ class Ui_AdminWindow(QDialog):
                 editlist[selectedroom['Roomnum'] - 1]['Status'] = "Available"
                 editlist[selectedroom['Roomnum'] - 1]['Date'] = " "
                 jsonrefill(editlist)
+        # record.json
+        file = open("record.json", 'r')
+        data = file.read()
+        file.close()
+        recordlist = json.loads(data)
+        currdate = datetime.today()
+        currdate = currdate.strftime("%d-%m-%Y")
+        for i in range(len(recordlist)):
+            if recordlist[i]['EndDate'] >= currdate and recordlist[i]['BookStatus'] == 'Ongoing':
+                recordlist[i]['BookStatus'] = 'Admin Force Reset'
+        recordjsonrefill(recordlist)
         print("All rooms reset")
         self.resetlabel.show()
         time.sleep(1.5)
