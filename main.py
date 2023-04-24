@@ -42,7 +42,7 @@ def roomreset():
                     recordlist[recordfinal['Roomnum']-1]['BookStatus'] = "Complete"
                     jsonrefill(editlist)
                     recordjsonrefill(recordlist)
-                print("Required rooms reset")
+    print("Required rooms reset")
 
 while True:
     #GUI

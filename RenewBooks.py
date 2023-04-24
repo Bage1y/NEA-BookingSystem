@@ -153,34 +153,38 @@ class Ui_RenewBookingWindow(QDialog):
         self.updatetable() if not self.ongoing else self.renewal()
         self.ongoing = not self.ongoing
     def updatetable(self):
-        currdate = datetime.today()
-        currdate = currdate.strftime("%d-%m-%Y")
-        roomnumtest = self.roomnumbox.value()
-        nametest = self.nameentry.toPlainText()
-        # record.json
-        file = open("record.json", 'r')
-        data = file.read()
-        file.close()
-        editlist = json.loads(data)
-        # function main
-        finallist = []
-        numlist = []
-        for i in range(len(editlist)):
-            if editlist[i]['Roomnum'] == roomnumtest and editlist[i]['BookingName'] == nametest and editlist[i]['EndDate'] >= currdate:
-                finallist.append(editlist[i])
-                numlist.append(i)
-        if not finallist:
-            print("No bookings match entered details")
-            self.errorlabel.show()
-            time.sleep(1.5)
-            self.errorlabel.hide()
-            return
+        extension = self.nightsbox.value()
+        if extension > 0:
+            currdate = datetime.today()
+            currdate = currdate.strftime("%d-%m-%Y")
+            roomnumtest = self.roomnumbox.value()
+            nametest = self.nameentry.toPlainText()
+            # record.json
+            file = open("record.json", 'r')
+            data = file.read()
+            file.close()
+            editlist = json.loads(data)
+            # function main
+            finallist = []
+            numlist = []
+            for i in range(len(editlist)):
+                if editlist[i]['Roomnum'] == roomnumtest and editlist[i]['BookingName'] == nametest and editlist[i]['EndDate'] >= currdate:
+                    finallist.append(editlist[i])
+                    numlist.append(i)
+            if not finallist:
+                print("No bookings match entered details")
+                self.errorlabel.show()
+                time.sleep(1.5)
+                self.errorlabel.hide()
+                return
+            else:
+                recentbooking = (finallist[len(finallist)-1]).items()
+            df = pd.DataFrame(recentbooking, columns= ['Statistic', 'Value'])
+            print(df)
+            model = PandasModel(df)
+            self.datatable.setModel(model)
         else:
-            recentbooking = (finallist[len(finallist)-1]).items()
-        df = pd.DataFrame(recentbooking, columns= ['Statistic', 'Value'])
-        print(df)
-        model = PandasModel(df)
-        self.datatable.setModel(model)
+            print("Invalid renewal length")
     def renewal(self):
         currdate = datetime.today()
         currdate = currdate.strftime("%d-%m-%Y")
@@ -229,6 +233,8 @@ class Ui_RenewBookingWindow(QDialog):
                 self.successlabel.show()
                 time.sleep(0.5)
                 self.close()
+        else:
+            print("Invalid renewal length")
     def retranslateUi(self, RenewBookingWindow):
         _translate = QtCore.QCoreApplication.translate
         RenewBookingWindow.setWindowTitle(_translate("RenewBookingWindow", "MainWindow"))

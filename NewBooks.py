@@ -1,10 +1,11 @@
 # imports
 import json,time
+import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from datetime import datetime, timedelta
 from database import editdatabase
-from globalfunctions import jsonrefill,linearsearch
+from globalfunctions import jsonrefill,linearsearch, PandasModel
 
 # all preferences search function
 def typesearch(room):
@@ -125,12 +126,12 @@ class Ui_NewBookingWindow(QDialog):
         self.label.setFont(font)
         self.label.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.label.setObjectName("label")
+        #continue to payment button
         self.continuebutton = QtWidgets.QPushButton(self.frame)
         self.continuebutton.setGeometry(QtCore.QRect(250, 630, 341, 81))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Light")
         font.setPointSize(18)
-        #continue-to-payment button
         self.continuebutton.setFont(font)
         self.continuebutton.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.continuebutton.setObjectName("continuebutton")
@@ -145,6 +146,33 @@ class Ui_NewBookingWindow(QDialog):
         self.calendaframe.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.949, y1:0.102273, x2:0.42, y2:0.391636, stop:0 rgba(16, 137, 135, 255), stop:1 rgba(36, 37, 37, 252));\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
         self.calendaframe.setText("")
         self.calendaframe.setObjectName("calendaframe")
+        #booking result table frame
+        self.resultframe = QtWidgets.QLabel(self.centralwidget)
+        self.resultframe.setGeometry(QtCore.QRect(1, 1, 955, 860))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI Light")
+        font.setPointSize(14)
+        self.resultframe.setFont(font)
+        self.resultframe.setStyleSheet("background-color:rgba(36, 37, 37, 252);\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
+        self.resultframe.setText("")
+        self.resultframe.setObjectName("resultframe")
+        self.resultframe.hide()
+        #confirm button (on booking detail)
+        self.confirmbutton = QtWidgets.QPushButton(self.resultframe)
+        self.confirmbutton.setGeometry(QtCore.QRect(300, 650, 341, 81))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI Light")
+        font.setPointSize(18)
+        self.confirmbutton.setFont(font)
+        self.confirmbutton.setStyleSheet("background-color:rgba(16, 137, 135, 255);\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
+        self.confirmbutton.setObjectName("confirmbutton")
+        self.confirmbutton.clicked.connect(self.backfunc)
+        #dataframe table display
+        self.datatable = QtWidgets.QTableView(self.resultframe)
+        self.datatable.setGeometry(QtCore.QRect(10, 12, 230, 450))
+        self.confirmbutton.setStyleSheet("background-color:rgba(16, 137, 135, 255);\n""color: rgb(215, 219, 218);\n""border-width: 3px;\n""border-color: rgb(61, 61, 61);\n""border-radius: 10px;")
+        self.datatable.setSortingEnabled(True)
+        self.datatable.setObjectName("datatable")
         #no availability notice
         self.AvailabilityLabel = QtWidgets.QLabel(self.frame)
         self.AvailabilityLabel.setGeometry(QtCore.QRect(280, 550, 281, 61))
@@ -156,6 +184,7 @@ class Ui_NewBookingWindow(QDialog):
         self.AvailabilityLabel.setObjectName("AvailabilityLabel")
         self.AvailabilityLabel.hide()
         #widget levels
+        self.resultframe.raise_()
         self.textBrowser.raise_()
         self.nightslabel.raise_()
         self.Namelabel.raise_()
@@ -204,8 +233,13 @@ class Ui_NewBookingWindow(QDialog):
                 bookstatus = 'Ongoing'
                 roomnumber = fulldata[selectedroom['Roomnum'] - 1]['Roomnum']
                 editdatabase(roomnumber, bookingname, startdate, enddate, bookstatus)
+                self.resultframe.show()
+                finalbooking = {"Roomnumber":roomnumber,"Booking Name":bookingname,"Start date":startdate,"End Date":enddate}
+                df = pd.DataFrame(finalbooking, columns=['Statistic', 'Value'])
+                print(df)
+                model = PandasModel(df)
+                self.datatable.setModel(model)
                 print("Room succesfully booked")
-                self.close()
     def backfunc(self):
         self.close()
     def retranslateUi(self, NewBookingWindow):
@@ -222,4 +256,5 @@ class Ui_NewBookingWindow(QDialog):
         self.Roomtypelabel.setText(_translate("NewBookingWindow", "Room Type:"))
         self.label.setText(_translate("NewBookingWindow","<html><head/><body><p align=\"justify\"><span style=\" font-size:14pt;\">Please enter your preferences</span></p></body></html>"))
         self.continuebutton.setText(_translate("NewBookingWindow", "Continue to payment"))
+        self.confirmbutton.setText(_translate("NewBookingWindow", "Confirm and return to menu"))
         self.AvailabilityLabel.setText(_translate("NewBookingWindow", "No rooms available for selected room type"))

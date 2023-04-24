@@ -152,9 +152,9 @@ class Ui_AdminWindow(QDialog):
         sys.exit()
     def records(self):
         Ui_AdminWindow.hide(self)
-        dlg = Ui_RecordsWindow()
-        dlg.setWindowTitle("RecordsWindow")
-        dlg.exec()
+        rec = Ui_RecordsWindow()
+        rec.setWindowTitle("RecordsWindow")
+        rec.exec()
         Ui_AdminWindow.show(self)
     def retranslateUi(self, AdminWindow):
         _translate = QtCore.QCoreApplication.translate
